@@ -15,8 +15,8 @@
             line-height: 1.6; 
             color: #333; 
             background-color: #f0f2f5; 
-            padding-bottom: 70px; /* Space for sticky footer */ 
-            overflow-y: auto !important; /* Ensures the page is scrollable */
+            padding-bottom: 70px; 
+            overflow-y: auto !important; 
         }        
         
         a { text-decoration: none; color: inherit; transition: 0.3s; }                
@@ -34,7 +34,7 @@
         .btn {            
             display: inline-block;            
             padding: 14px 30px;            
-            background-color: #28a745; /* Green for Go/Call */            
+            background-color: #28a745;            
             color: white;            
             border-radius: 50px;            
             font-weight: 800;            
@@ -50,7 +50,6 @@
         }        
         .btn:hover { background-color: #218838; transform: translateY(-2px); }                
         
-        /* Pulse Animation for Call Buttons */        
         .pulse-anim { animation: pulse 2s infinite; }        
         @keyframes pulse {            
             0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }            
@@ -60,22 +59,37 @@
 
         /* --- THE BLUR WRAPPER --- */
         #content-wrapper {
-            filter: blur(6px); /* Blurs the background */
-            pointer-events: none; /* Stops users from clicking background links while popup is active */
+            transition: filter 0.3s ease;
+        }
+        /* Class added via HTML, removed via JS */
+        .is-blurred {
+            filter: blur(6px); 
+            pointer-events: none; 
         }
 
-        /* --- UN-CLOSEABLE POPUP --- */
+        /* --- CLOSEABLE POPUP --- */
         #jnj-forced-popup {
             display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.75); z-index: 10000;
             justify-content: center; align-items: center; padding: 20px;
-            pointer-events: auto; /* Re-enables clicking for the popup */
+            pointer-events: auto; 
+            transition: opacity 0.3s ease;
         }
         .popup-box {
             background: #fff; padding: 40px 25px; border-radius: 20px;
             text-align: center; max-width: 450px; width: 100%;
             box-shadow: 0 15px 50px rgba(0,0,0,0.5); position: relative; z-index: 10001;
         }
+        
+        /* The X Close Button */
+        .close-popup {
+            position: absolute; top: 15px; right: 20px;
+            font-size: 28px; color: #999; cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+        .close-popup:hover { color: #333; }
+
         .gecko-img {
             width: 100%; max-width: 320px; height: auto; margin-bottom: 20px;
             animation: smoothFloat 3s infinite ease-in-out;
@@ -115,21 +129,16 @@
         .comparison-wrapper { margin-top: -50px; position: relative; z-index: 10; }        
         .comparison-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }                
         
-        /* Table Headers (Desktop) */        
         .comp-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; background: #f8f9fa; padding: 15px 25px; font-weight: 700; color: #666; border-bottom: 2px solid #eee; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }                
-        
-        /* Table Rows */        
         .comp-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; padding: 25px; border-bottom: 1px solid #eee; align-items: center; transition: 0.2s; }        
         .comp-row:hover { background-color: #fcfcfc; }        
         .comp-row:last-child { border-bottom: none; }
         
-        /* Company Info */        
         .company-info { display: flex; align-items: center; gap: 15px; }        
         .logo-circle { width: 55px; height: 55px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: white; font-size: 1.2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }        
         .company-name h3 { font-size: 1.2rem; margin: 0; color: #333; }        
         .company-name span { font-size: 0.85rem; color: #777; }
         
-        /* Ratings & Features */        
         .rating { color: #ffc107; font-size: 1rem; }        
         .feature-badge { background: #e8f5e9; color: #2e7d32; padding: 5px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: 600; display: inline-block; }
         
@@ -144,18 +153,18 @@
         @media (max-width: 768px) {            
             .hero { padding: 40px 15px 70px; }            
             .hero h1 { font-size: 2rem; }            
-            .comp-header { display: none; } /* Hide table headers on mobile */            
+            .comp-header { display: none; }            
             .comp-row { grid-template-columns: 1fr; gap: 15px; padding: 20px; text-align: center; position: relative; }            
             .company-info { flex-direction: column; gap: 10px; margin-bottom: 10px; }            
             .btn { width: 100%; }            
-            .header-phone { display: none; } /* Hide header phone on mobile to declutter */            
-            .sticky-call-bar { display: block; } /* Show sticky footer */        
+            .header-phone { display: none; }            
+            .sticky-call-bar { display: block; }        
         }    
     </style>
 </head>
 <body>
 
-    <div id="content-wrapper">
+    <div id="content-wrapper" class="is-blurred">
         <header>        
             <div class="container nav-container">            
                 <a href="index.html" class="logo">                
@@ -318,6 +327,8 @@
         </div>
     </div> <div id="jnj-forced-popup">
         <div class="popup-box">
+            <span class="close-popup" onclick="closePopup()">&times;</span>
+            
             <img src="logo-insurance-768x432.jpg" alt="Geico Gecko Logo" class="gecko-img">
             
             <h2 style="color:#003366; margin-bottom:10px;">Licensed Agents Available</h2>
@@ -326,6 +337,8 @@
             <a href="tel:8883512673" class="btn-call-popup">
                 <i class="fas fa-phone-alt"></i> (888) 351-2673
             </a>
+
+        
         </div>
     </div>
     
@@ -336,10 +349,22 @@
     </div>
 
     <script>
-        // Disable Escape key so they can't exit via keyboard
+        // Function to smoothly close the popup and remove the blur
+        function closePopup() {
+            var popup = document.getElementById('jnj-forced-popup');
+            var content = document.getElementById('content-wrapper');
+            
+            popup.style.opacity = '0';
+            setTimeout(function() {
+                popup.style.display = 'none';
+                content.classList.remove('is-blurred');
+            }, 300); // Wait for the fade out to finish
+        }
+
+        // Allow users to close the popup with the Escape key
         window.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
-                e.preventDefault();
+                closePopup();
             }
         });
 
